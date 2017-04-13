@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="model" version="1.5">
+	<fields>
+		<field name="benchmark_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="dataset_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="experiment_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="model_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		
+		<field name="model_name"		type="string"		indexed="true"	stored="true"/>
+		<field name="model_description"		type="string"		indexed="true"	stored="true"/>
+		<field name="number_of_layers"		type="string"		indexed="true"	stored="true"/>
+		<field name="model_parameters"		type="string"		indexed="true"	stored="true"/>
+		<field name="model_description_file"		type="string"		indexed="true"	stored="true"/>
+		<field name="model_weight_file"		type="string"		indexed="true"	stored="true"/>
+		<field name="training_accuracy"		type="float"		indexed="true"	stored="true"/>
+		<field name="training_loss"		type="float"		indexed="true"	stored="true"/>
+		<field name="validation_accuracy"		type="float"		indexed="true"	stored="true"/>
+		<field name="validation_loss"		type="float"		indexed="true"	stored="true"/>
+		<field name="runtime_hours"		type="float"		indexed="true"	stored="true"/>
+		<field name="date"		type="tdate"		indexed="true"	stored="true"/>
+
+		<field name="text"			type="text_general"	indexed="true"	stored="false"	multiValued="true"/>
+		<field name="text_rev"		type="text_general_rev" indexed="true" stored="false" multiValued="true"/>
+		<field name="_version_"			type="long"		indexed="true"	stored="true"/>
+
+		<field name="date_inserted"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+		<field name="date_modified"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+	</fields>
+
+	<uniqueKey>model_id</uniqueKey>
+	
+	<copyField source="*" dest="text"/>
+
+	<xi:include href="schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback></xi:fallback>
+	</xi:include>
+</schema>

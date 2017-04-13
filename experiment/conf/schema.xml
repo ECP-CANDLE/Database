@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="experiment" version="1.5">
+	 <fields>
+		<field name="benchmark_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="dataset_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="experiment_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+
+		<field name="experiment_title"		type="string"		indexed="true"	stored="true"/>
+		<field name="description"		type="string"		indexed="true"	stored="true"/>
+		<field name="optimization_package_name"		type="string"		indexed="true"	stored="true"/>
+		<field name="optimization_package_version"		type="string"		indexed="true"	stored="true"/>
+		<field name="objective_function"		type="string"		indexed="true"	stored="true"/>
+		<field name="search_space"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+		<field name="search_strategy"		type="string"		indexed="true"	stored="true"/>
+		<field name="max_runs"		type="int"		indexed="true"	stored="true"/>
+		<field name="status"		type="string"		indexed="true"	stored="true"/>
+		<field name="start_time"		type="tdate"		indexed="true"	stored="true"/>
+		<field name="end_time"		type="tdate"		indexed="true"	stored="true"/>
+		<field name="system_description"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+
+		<field name="text"			type="text_general"	indexed="true"	stored="false"	multiValued="true"/>
+		<field name="text_rev"		type="text_general_rev" indexed="true" stored="false" multiValued="true"/>
+		<field name="_version_"			type="long"		indexed="true"	stored="true"/>
+
+		<field name="date_inserted"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+		<field name="date_modified"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+	</fields>
+
+	<uniqueKey>experiment_id</uniqueKey>
+	
+	<copyField source="*" dest="text"/>
+
+	<xi:include href="schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback></xi:fallback>
+	</xi:include>
+</schema>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="dataset" version="1.5">
+	 <fields>
+		<field name="benchmark_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+		<field name="dataset_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+
+		<field name="dataset_title"		type="string"		indexed="true"	stored="true"/>
+		<field name="description"		type="string"		indexed="true"	stored="true"/>
+		<field name="source"		type="string"		indexed="true"	stored="true"/>
+		<field name="reference"		type="string"		indexed="true"	stored="true"/>
+		<field name="version"		type="string"		indexed="true"	stored="true"/>
+		<field name="download_date"		type="tdate"		indexed="true"	stored="true"/>
+
+		<field name="input_dimensions"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_label_x"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_label_y"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_values"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_file"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_file_type"		type="string"		indexed="true"	stored="true"/>
+		<field name="input_file_size"		type="int"		indexed="true"	stored="true"/>
+
+		<field name="data_processing_description"		type="string"		indexed="true"	stored="true"/>
+		<field name="data_processing_script"		type="string"		indexed="true"	stored="true"/>
+
+		<field name="samples"		type="int"		indexed="true"	stored="true"/>
+		<field name="samples_training"		type="int"		indexed="true"	stored="true"/>
+		<field name="samples_validation"		type="int"		indexed="true"	stored="true"/>
+
+		<field name="text"			type="text_general"	indexed="true"	stored="false"	multiValued="true"/>
+		<field name="text_rev"		type="text_general_rev" indexed="true" stored="false" multiValued="true"/>
+		<field name="_version_"			type="long"		indexed="true"	stored="true"/>
+
+		<field name="date_inserted"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+		<field name="date_modified"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+	</fields>
+
+	<uniqueKey>dataset_id</uniqueKey>
+	
+	<copyField source="*" dest="text"/>
+
+	<xi:include href="schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback></xi:fallback>
+	</xi:include>
+</schema>

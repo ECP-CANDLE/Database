@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="benchmark" version="1.5">
+	 <fields>
+		<field name="benchmark_id"		type="string"		indexed="true"	stored="true"	docValues="true"/>
+
+		<field name="benchmark_title"	type="string"		indexed="true"	stored="true"/>
+		<field name="overview"		type="string"		indexed="true"	stored="true"/>
+		<field name="relavance"		type="string"		indexed="true"	stored="true"/>
+		<field name="expected_outcome"		type="string"		indexed="true"	stored="true"/>
+
+		<field name="data_description"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+		<field name="network_description"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+		<field name="expected_outcomes"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+		<field name="evaluation_metrics"		type="string"		indexed="true"	stored="true"	multiValued="true"/>
+
+		<field name="author"		type="string"		indexed="true"	stored="true"/>
+		<field name="source_code"		type="string"		indexed="true"	stored="true"/>
+
+		<field name="text"			type="text_general"	indexed="true"	stored="false"	multiValued="true"/>
+		<field name="text_rev"		type="text_general_rev" indexed="true" stored="false" multiValued="true"/>
+		<field name="_version_"			type="long"		indexed="true"	stored="true"/>
+
+		<field name="date_inserted"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+		<field name="date_modified"		type="tdate"		indexed="true"	stored="true" default="NOW"/>
+	</fields>
+
+	<uniqueKey>benchmark_id</uniqueKey>
+	
+	<copyField source="*" dest="text"/>
+
+	<xi:include href="schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+		<xi:fallback></xi:fallback>
+	</xi:include>
+</schema>

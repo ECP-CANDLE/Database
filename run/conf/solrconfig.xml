@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+	<luceneMatchVersion>6.5.0</luceneMatchVersion>
+
+	<lib dir="${jetty.home:/opt/solr/example}/../contrib/extraction/lib" regex=".*\.jar" />
+	<lib dir="${jetty.home:/opt/solr/example}/../dist/" regex="solr-cell-\w.*\.jar" />
+
+	<lib dir="${jetty.home:/opt/solr/example}/../contrib/clustering/lib/" regex=".*\.jar" />
+	<lib dir="${jetty.home:/opt/solr/example}/../dist/" regex="solr-clustering-\w.*\.jar" />
+
+	<lib dir="${jetty.home:/opt/solr/example}/../contrib/langid/lib/" regex=".*\.jar" />
+	<lib dir="${jetty.home:/opt/solr/example}/../dist/" regex="solr-langid-\w.*\.jar" />
+
+	<lib dir="${jetty.home:/opt/solr/example}/../contrib/velocity/lib" regex=".*\.jar" />
+	<lib dir="${jetty.home:/opt/solr/example}/../dist/" regex="solr-velocity-\w.*\.jar" />
+
+	<dataDir>${solr.data.dir:}</dataDir>
+	<directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
+
+	<codecFactory class="solr.SchemaCodecFactory"/>
+	<schemaFactory class="ClassicIndexSchemaFactory"/>
+
+	<indexConfig>
+		<lockType>${solr.lock.type:native}</lockType>
+	</indexConfig>
+
+	<updateHandler class="solr.DirectUpdateHandler2">
+		<updateLog>
+			<str name="dir">${solr.ulog.dir:}</str>
+		</updateLog>
+		<autoCommit>
+			<maxDocs>20000</maxDocs>
+			<openSearcher>false</openSearcher> 
+		</autoCommit>
+	</updateHandler>
+
+	<query>
+		<maxBooleanClauses>1024</maxBooleanClauses>
+		<filterCache class="solr.FastLRUCache" size="512" initialSize="512" autowarmCount="0"/>
+		<queryResultCache class="solr.FastLRUCache" size="512" initialSize="512" autowarmCount="0"/>
+		<documentCache class="solr.FastLRUCache" size="512" initialSize="512" autowarmCount="0"/>
+
+		<enableLazyFieldLoading>true</enableLazyFieldLoading>
+		<useFilterForSortedQuery>true</useFilterForSortedQuery>
+		<queryResultWindowSize>20</queryResultWindowSize>
+		<queryResultMaxDocsCached>200</queryResultMaxDocsCached>
+
+		<listener event="newSearcher" class="solr.QuerySenderListener">
+			<arr name="queries">
+			</arr>
+		</listener>
+		<listener event="firstSearcher" class="solr.QuerySenderListener">
+			<arr name="queries"></arr>
+		</listener>
+
+		<useColdSearcher>true</useColdSearcher>
+
+		<maxWarmingSearchers>10</maxWarmingSearchers>
+	</query>
+
+	<requestDispatcher handleSelect="false" >
+		<httpCaching never304="true" />
+	</requestDispatcher>
+
+	<requestHandler name="/select" class="solr.SearchHandler">
+		<lst name="defaults">
+			<str name="echoParams">explicit</str>
+			<int name="rows">10</int>
+			<str name="q.op">AND</str>
+			<str name="df">text</str>
+		</lst>
+	</requestHandler>
+
+  <!-- realtime get handler, guaranteed to return the latest stored fields of
+       any document, without the need to commit or open a new searcher.  The
+       current implementation relies on the updateLog feature being enabled.
+
+       ** WARNING **
+       Do NOT disable the realtime get handler at /get if you are using
+       SolrCloud otherwise any leader election will cause a full sync in ALL
+       replicas for the shard in question. Similarly, a replica recovery will
+       also always fetch the complete index from the leader because a partial
+       sync will not be possible in the absence of this handler.
+  -->
+  <requestHandler name="/get" class="solr.RealTimeGetHandler">
+     <lst name="defaults">
+       <str name="omitHeader">true</str>
+       <str name="wt">json</str>
+       <str name="indent">true</str>
+     </lst>
+  </requestHandler>
+
+  <requestHandler name="/update" class="solr.UpdateRequestHandler">
+    <!--
+       <lst name="defaults">
+         <str name="update.chain">dedupe</str>
+       </lst>
+       -->
+  </requestHandler>
+
+  <!-- for back compat with clients using /update/json and /update/csv -->  
+  <requestHandler name="/update/json" class="solr.UpdateRequestHandler">
+        <lst name="defaults">
+         <str name="stream.contentType">application/json</str>
+       </lst>
+  </requestHandler>
+
+  <requestHandler name="/analysis/field" 
+                  startup="lazy"
+                  class="solr.FieldAnalysisRequestHandler" />
+
+  <requestHandler name="/analysis/document" 
+                  class="solr.DocumentAnalysisRequestHandler" 
+                  startup="lazy" />
+
+  <!-- ping/healthcheck -->
+  <requestHandler name="/admin/ping" class="solr.PingRequestHandler">
+    <lst name="invariants">
+      <str name="q">solrpingquery</str>
+    </lst>
+    <lst name="defaults">
+      <str name="echoParams">all</str>
+    </lst>
+    <!-- An optional feature of the PingRequestHandler is to configure the 
+         handler with a "healthcheckFile" which can be used to enable/disable 
+         the PingRequestHandler.
+         relative paths are resolved against the data dir 
+      -->
+    <!-- <str name="healthcheckFile">server-enabled.txt</str> -->
+  </requestHandler>
+
+  <!-- Echo the request contents back to the client -->
+  <requestHandler name="/debug/dump" class="solr.DumpRequestHandler" >
+    <lst name="defaults">
+     <str name="echoParams">explicit</str> 
+     <str name="echoHandler">true</str>
+    </lst>
+  </requestHandler>
+
+  <!-- Term Vector Component
+
+       http://wiki.apache.org/solr/TermVectorComponent
+    -->
+  <searchComponent name="tvComponent" class="solr.TermVectorComponent"/>
+
+  <requestHandler name="/tvrh" class="solr.SearchHandler" startup="lazy">
+    <lst name="defaults">
+      <str name="df">text</str>
+      <bool name="tv">true</bool>
+    </lst>
+    <arr name="last-components">
+      <str>tvComponent</str>
+    </arr>
+  </requestHandler>
+
+  <searchComponent name="clustering"
+                   enable="${solr.clustering.enabled:false}"
+                   class="solr.clustering.ClusteringComponent" >
+    <lst name="engine">
+      <str name="name">lingo</str>
+
+      <str name="carrot.algorithm">org.carrot2.clustering.lingo.LingoClusteringAlgorithm</str>
+      <str name="carrot.resourcesDir">clustering/carrot2</str>
+    </lst>
+
+    <!-- An example definition for the STC clustering algorithm. -->
+    <lst name="engine">
+      <str name="name">stc</str>
+      <str name="carrot.algorithm">org.carrot2.clustering.stc.STCClusteringAlgorithm</str>
+    </lst>
+
+    <!-- An example definition for the bisecting kmeans clustering algorithm. -->
+    <lst name="engine">
+      <str name="name">kmeans</str>
+      <str name="carrot.algorithm">org.carrot2.clustering.kmeans.BisectingKMeansClusteringAlgorithm</str>
+    </lst>
+  </searchComponent>
+
+  <requestHandler name="/clustering"
+                  startup="lazy"
+                  enable="${solr.clustering.enabled:false}"
+                  class="solr.SearchHandler">
+    <lst name="defaults">
+      <bool name="clustering">true</bool>
+      <bool name="clustering.results">true</bool>
+      <!-- Field name with the logical "title" of a each document (optional) -->
+      <str name="carrot.title">name</str>
+      <!-- Field name with the logical "URL" of a each document (optional) -->
+      <str name="carrot.url">id</str>
+      <!-- Field name with the logical "content" of a each document (optional) -->
+      <str name="carrot.snippet">features</str>
+      <!-- Apply highlighter to the title/ content and use this for clustering. -->
+      <bool name="carrot.produceSummary">true</bool>
+      <!-- the maximum number of labels per cluster -->
+      <!--<int name="carrot.numDescriptions">5</int>-->
+      <!-- produce sub clusters -->
+      <bool name="carrot.outputSubClusters">false</bool>
+
+      <!-- Configure the remaining request handler parameters. -->
+      <str name="defType">edismax</str>
+      <str name="qf">
+        text^0.5 features^1.0 name^1.2 sku^1.5 id^10.0 manu^1.1 cat^1.4
+      </str>
+      <str name="q.alt">*:*</str>
+      <str name="rows">10</str>
+      <str name="fl">*,score</str>
+    </lst>
+    <arr name="last-components">
+      <str>clustering</str>
+    </arr>
+  </requestHandler>
+
+  <searchComponent name="terms" class="solr.TermsComponent"/>
+
+  <!-- A request handler for demonstrating the terms component -->
+  <requestHandler name="/terms" class="solr.SearchHandler" startup="lazy">
+     <lst name="defaults">
+      <bool name="terms">true</bool>
+      <bool name="distrib">false</bool>
+    </lst>     
+    <arr name="components">
+      <str>terms</str>
+    </arr>
+  </requestHandler>
+
+
+  <queryResponseWriter name="json" class="solr.JSONResponseWriter">
+     <!-- For the purposes of the tutorial, JSON responses are written as
+      plain text so that they are easy to read in *any* browser.
+      If you expect a MIME type of "application/json" just remove this override.
+     -->
+    <str name="content-type">text/plain; charset=UTF-8</str>
+  </queryResponseWriter>
+
+    <queryResponseWriter name="velocity" class="solr.VelocityResponseWriter" startup="lazy"/>
+
+  <admin>
+    <defaultQuery>*:*</defaultQuery>
+  </admin>
+</config>
