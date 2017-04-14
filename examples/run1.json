@@ -1,4 +1,4 @@
 {
-  "run_id": "1",
-  "parameters": "N1:34,NE:56"
+  "run_id": "3",
+  "parameters": ["N1:34", "NE:56"]
 }
