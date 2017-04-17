@@ -33,6 +33,9 @@ def run_insert(run_id, parameters,
 
         }])
 
+def params2string(N1, NE):
+    return "N1=%i,NE=%i" % (N1, NE)
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 3:
