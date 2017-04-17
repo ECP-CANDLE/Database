@@ -1,10 +1,13 @@
-#!/usr/bin/env python
 
-# JSON PRINT
-# Simply pipe JSON in here for pretty-printing
+# Just use json_pp !
 
-import json
-import sys
+# #!/usr/bin/env python
 
-json_data = json.load(sys.stdin)
-print json.dumps(json_data, indent=2, sort_keys=True)
+# # JSON PRINT
+# # Simply pipe JSON in here for pretty-printing
+
+# import json
+# import sys
+
+# json_data = json.load(sys.stdin)
+# print json.dumps(json_data, indent=2, sort_keys=True)
