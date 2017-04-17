@@ -24,4 +24,20 @@ All data is stored in .../Database
 
 5. Start inserting data with the examples in Database/examples
 
+## Basic operation reference
+
+### Command line tools
+
+* A `curl`-based insertion is [here](https://github.com/ECP-CANDLE/Database/blob/master/examples/run-insert.sh)
+* A `wget`-based query is [here](https://github.com/ECP-CANDLE/Database/blob/master/examples/run-query.sh)
+
+### Python
+
+We are using [pysolr](https://pypi.python.org/pypi/pysolr/3.4.0) to access the database from workflows.
+
+* A sample insertion is [here](https://github.com/ECP-CANDLE/Database/blob/master/examples/run-insert-py.sh)
+* A sample query is ...
+* Our WIP pysolr abstraction is [run_insert.py](https://github.com/ECP-CANDLE/Database/blob/master/py/run_insert.py)
+[README](https://github.com/ECP-CANDLE/Database/tree/master/py)
+
 ## Workflow access
