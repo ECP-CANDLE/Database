@@ -91,12 +91,17 @@
   </requestHandler>
 
   <requestHandler name="/update" class="solr.UpdateRequestHandler">
-    <!--
-       <lst name="defaults">
-         <str name="update.chain">dedupe</str>
-       </lst>
-       -->
+    <lst name="defaults">
+      <str name="update.chain">keygen</str>
+    </lst>
   </requestHandler>
+
+  <updateRequestProcessorChain name="keygen">
+    <processor class="solr.UUIDUpdateProcessorFactory">
+      <str name="fieldName">run_id</str>
+    </processor>
+    <processor class="solr.RunUpdateProcessorFactory" />
+  </updateRequestProcessorChain>
 
   <!-- for back compat with clients using /update/json and /update/csv -->  
   <requestHandler name="/update/json" class="solr.UpdateRequestHandler">
