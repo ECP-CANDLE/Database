@@ -1,20 +1,26 @@
 #!/usr/bin/env python
 
-# RUN INSERT
+# CANDLE DB
 
 from __future__ import print_function
+
+import argparse
+
 import pysolr
 
 hostport = "localhost:8983"
 url_template = "http://%s/solr/%s"
 solr = None
 
+def abort(msg):
+    print("candle_db: " + msg)
+    sys.exit(1)
+
 def set_url(core):
     """Setup a Solr instance. The timeout is optional."""
     global solr
     if not (core == "run" or core == "experiment"):
         abort("unknown core name: %s", core)
-
     solr = pysolr.Solr(url_template % (hostport, core), timeout=10)
 
 def run_insert(run_id, parameters,
@@ -73,10 +79,6 @@ def experiment_insert(experiment_id,
 def params2string(N1, NE):
     return "N1=%i,NE=%i" % (N1, NE)
 
-def abort(msg):
-    print("candle_db: " + msg)
-    sys.exit(1)
-
 def kv2dict(L):
     """ Convert list L of [ K=V... ] to dict { K:V ... } """
     result = {}
@@ -113,6 +115,10 @@ def query(args):
         q = args[1]
     # Return up to 1B results (default is 10):
     results = solr.search(q=q, rows=1000*1000*1000)
+    return results
+
+def query_print(args):
+    results = query(args)
     print("results: " + str(len(results.docs)))
     for result in results:
         print("----")
@@ -137,6 +143,33 @@ def delete(args):
     set_url(db)
     solr.delete(q="*:*")
 
+def ls(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--no-count', default=False, action='store_true')
+    parser.add_argument("remainder", nargs="*")
+    ns = parser.parse_args(args)
+    if len(ns.remainder) < 1:
+        abort("ls: requires core name!")
+    db = ns.remainder[0]
+    results = query(ns.remainder)
+    if not ns.no_count:
+        print("results: " + str(len(results.docs)))
+    if db == "experiment":
+        ls_experiment(ns.remainder[1:], results)
+    elif db == "run":
+        ls_run(ns.remainder[1:], results)
+
+def ls_experiment(args, results):
+    for result in results:
+        print(result["experiment_id"])
+
+def ls_run(args, results):
+    table = {}
+    for result in results:
+        parameters = result["parameters"][0]
+        table[result["run_id"]] = parameters
+    print_table(table)
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
@@ -150,6 +183,8 @@ if __name__ == "__main__":
     elif subcommand == "update":
         update(remainder)
     elif subcommand == "query":
-        query(remainder)
+        query_print(remainder)
+    elif subcommand == "ls":
+        ls(remainder)
     else:
         abort("unknown subcommand: " + subcommand)
