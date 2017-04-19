@@ -5,8 +5,17 @@
 from __future__ import print_function
 import pysolr
 
-# Setup a Solr instance. The timeout is optional.
-solr = pysolr.Solr('http://localhost:8983/solr/run', timeout=10)
+hostport = "localhost:8983"
+url_template = "http://%s/solr/%s"
+solr = None
+
+def set_url(core):
+    """Setup a Solr instance. The timeout is optional."""
+    global solr
+    if not (core == "run" or core == "experiment"):
+        abort("unknown core name: %s", core)
+
+    solr = pysolr.Solr(url_template % (hostport, core), timeout=10)
 
 def run_insert(run_id, parameters,
                benchmark_id  = "unknown",
@@ -25,22 +34,122 @@ def run_insert(run_id, parameters,
                model_description_file = None,
                model_weight_file = None,
                model_result_files = None):
+    set_url("run")
     solr.add([
         {
             "run_id": run_id,
             "parameters": parameters,
-            "benchmark_id": benchmark_id
-
+            "benchmark_id": benchmark_id,
+            "experiment_id": experiment_id
         }])
+
+def experiment_insert(experiment_id,
+                      benchmark_id  = "unknown",
+                      dataset_id    = "unknown",
+                      experiment_title = "untitled",
+                      description = "_blank",
+                      optimization_package_name = "unknown",
+                      optimization_package_version = "unknown",
+                      objective_function = "unknown",
+                      search_space = "unknown",
+                      search_strategy = "unknown",
+                      max_runs = "unknown",
+                      status = None,
+                      start_time = None,
+                      end_time = None,
+                      system_description = "unknown",
+                      keys = None):
+    set_url("experiment")
+    D = {
+            "experiment_id": experiment_id,
+            "benchmark_id": benchmark_id,
+            "experiment_title": experiment_title
+        }
+    if keys != None: D.update(kv2dict(keys))
+
+    solr.add([ D ])
+
 
 def params2string(N1, NE):
     return "N1=%i,NE=%i" % (N1, NE)
 
+def abort(msg):
+    print("candle_db: " + msg)
+    sys.exit(1)
+
+def kv2dict(L):
+    """ Convert list L of [ K=V... ] to dict { K:V ... } """
+    result = {}
+    for kv in L:
+        print(kv)
+        tokens = kv.split('=')
+        key = tokens[0]
+        if len(tokens) == 1:
+            result[key] = ""
+        else:
+            value = tokens[1]
+            result[key] = value
+    sys.exit(0)
+
+def update(remainder):
+    if len(remainder) < 1:
+        abort("update: requires core name!")
+    db = remainder[0]
+    set_url(db)
+    keys = kv2dict(remainder[1:])
+    if db == "run":
+        update_run()
+
+def update_run(remainder):
+    run_insert()
+
+def query(args):
+    if len(args) < 1:
+        abort("query: requires core name!")
+    db = args[0]
+    set_url(db)
+    q = "*:*" # Default
+    if len(args) == 2:
+        q = args[1]
+    # Return up to 1B results (default is 10):
+    results = solr.search(q=q, rows=1000*1000*1000)
+    print("results: " + str(len(results.docs)))
+    for result in results:
+        print("----")
+        print_result(result)
+
+def print_result(result):
+    copy = result.copy()
+    del copy["_version_"]
+    print_table(copy)
+
+def print_table(D):
+    K = D.keys()
+    K.sort()
+    n = max(map(len, K)) # Length of longest key
+    for (k,v) in D.iteritems():
+        print("%*s = %s" % (-n, k, v))
+
+def delete(args):
+    if len(args) != 1:
+        abort("delete: requires core name!")
+    db = args[0]
+    set_url(db)
+    solr.delete(q="*:*")
+
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) != 3:
-        print("Requires: run_id parameters")
+    if len(sys.argv) < 2:
+        print("Requires: subcommand arguments...")
         sys.exit(1)
-    run_id = sys.argv[1]
-    parameters = sys.argv[2]
-    run_insert(run_id, parameters)
+
+    subcommand = sys.argv[1]
+    remainder  = sys.argv[2:]
+    if subcommand == "delete":
+        delete(remainder)
+    elif subcommand == "update":
+        update(remainder)
+    elif subcommand == "query":
+        query(remainder)
+    else:
+        abort("unknown subcommand: " + subcommand)

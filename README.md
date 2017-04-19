@@ -35,6 +35,18 @@ All data is stored in .../Database
 
 We are using [pysolr](https://pypi.python.org/pypi/pysolr/3.4.0) to access the database from workflows.
 
+#### Setup
+
+1. Download:
+```
+wget https://pypi.python.org/packages/47/d6/91dd269b4443c77905ac5f347318435bfeaa2825ce2763d936e0945f29e4/pysolr-3.6.0.tar.gz
+```
+2. Untar:
+```
+tar xfz pysolr-3.6.0.tar.gz
+```
+3. Set `PYTHONPATH` to point to that directory.  You only need `pysolr.py`, you can delete everything else.
+
 * A sample insertion is [here](https://github.com/ECP-CANDLE/Database/blob/master/examples/run-insert-py.sh)
 * A sample query is ...
 * Our WIP pysolr abstraction is [run_insert.py](https://github.com/ECP-CANDLE/Database/blob/master/py/run_insert.py)
