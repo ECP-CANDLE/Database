@@ -23,7 +23,7 @@ def set_url(core):
         abort("unknown core name: %s", core)
     solr = pysolr.Solr(url_template % (hostport, core), timeout=10)
 
-def run_insert(run_id, parameters,
+def update_run(run_id, parameters,
                benchmark_id  = "unknown",
                dataset_id    = "unknown",
                experiment_id = "unknown",
@@ -40,8 +40,7 @@ def run_insert(run_id, parameters,
                model_description_file = None,
                model_weight_file = None,
                model_result_files = None):
-    set_url("run")
-    solr.add([
+    update_run_kv([
         {
             "run_id": run_id,
             "parameters": parameters,
@@ -91,19 +90,19 @@ def kv2dict(L):
         else:
             value = tokens[1]
             result[key] = value
-    sys.exit(0)
+    return result
 
 def update(remainder):
     if len(remainder) < 1:
         abort("update: requires core name!")
     db = remainder[0]
     set_url(db)
-    keys = kv2dict(remainder[1:])
+    kv = kv2dict(remainder[1:])
     if db == "run":
-        update_run()
+        update_run_kv(kv)
 
-def update_run(remainder):
-    run_insert()
+def update_run_kv(kv):
+    solr.add([kv])
 
 def query(args):
     if len(args) < 1:
