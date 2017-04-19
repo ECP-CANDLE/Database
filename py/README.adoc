@@ -15,13 +15,26 @@ wget https://pypi.python.org/packages/47/d6/91dd269b4443c77905ac5f347318435bfeaa
 
 5. Set +PYTHONPATH+ to include the directory +pysolr-3.6.0+ or copy +pysolr.py+ into +PYTHONPATH+ somewhere
 
+== The CANDLE DB tool
+
+The tool is called +candle_db+.  It contains a nice Python API for accessing the CANDLE Solr database.  It can also be used on the command line.
+
 == Insert from command line
 
 ----
-./run_insert.py <run_id> <parameters>
+./candle_db update run run_id=<run_id> parameters=<parameters> <other key/values...>
 ----
 
 == Insert from Python
+
+Cf. The SwiftExamples https://github.com/CODARcode/SwiftExamples/blob/5f5ff606afa5a56686def061deea2d75a51dede2/SimpleSweepPyDB/sweep.py#L57[sweep.py], which is called from Swift
+
+----
+import candle_db
+candle_db.run_insert(run_id=run_id,
+                     parameters=params_string,
+                     experiment_id=sweep_experiment_id)
+----
 
 == Sample transcript after workflows
 
