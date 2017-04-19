@@ -61,7 +61,6 @@ The +N1=2,NE=6+ sample looks relevant.  What was its metadata?
 ----
 $ candle_db query run run_id:workflow.swift-276\\:N1=1,NE=5
 results: 1
-----
 date_inserted = 2017-04-19T18:24:37.292Z
 benchmark_id  = unknown
 experiment_id = workflow.swift-276
