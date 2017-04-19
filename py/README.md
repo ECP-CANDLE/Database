@@ -21,9 +21,9 @@ wget https://pypi.python.org/packages/47/d6/91dd269b4443c77905ac5f347318435bfeaa
 ./run_insert.py <run_id> <parameters>
 ----
 
-## Insert from Python
+== Insert from Python
 
-## Sample transcript after workflows
+== Sample transcript after workflows
 
 What have I run so far?
 
