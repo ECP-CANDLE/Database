@@ -4,7 +4,8 @@
 # Converts a directory of runs into a simple load over time table
 # The output file format for each line is
 # timestamp load
-# where the timestamp is floating point Unix seconds
+# where the timestamp is floating point Unix hours
+#   relative to first event
 # and the load is the number of models running
 
 # Tested with
@@ -81,6 +82,9 @@ print("Found %i events." % len(events))
 # Sort by timestamp
 events.sort()
 
+# Get first event time
+first = events[0][0]
+
 fp_out = open(output_file, "w")
 fp_out.write("0 0\n")
 
@@ -88,13 +92,13 @@ fp_out.write("0 0\n")
 # record load at each transition point
 load = 0
 for event in events:
-    t = event[0]
+    t = (event[0] - first)/3600
     if event[1] == START:
         load = load+1
     elif event[1] == STOP:
         load = load-1
     else:
         abort("Unknown event!")
-    fp_out.write("%0.3f %i\n" % (t, load))
+    fp_out.write("%0.6f %i\n" % (t, load))
 
 fp_out.close()
