@@ -1,0 +1,7 @@
+
+To make the load plot, do:
+
+----
+$ python json2load.py /path/to/nt3_mlrMBO-360-10 load.data
+$ ./load.sh
+----
