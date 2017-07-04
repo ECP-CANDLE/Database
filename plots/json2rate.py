@@ -1,7 +1,7 @@
 
 # JSON TO RATE
 
-# NOTE: Run this with ./json2rate (shell script wrapper)
+# NOTE: Run this with './json2table rate' (shell script wrapper)
 
 # Converts a directory of runs into a learning rate over time table
 # The output file format for each line is
@@ -52,8 +52,8 @@ for rundir in rundirs:
     duration = secs_stop - secs_start
     rate = trainable_params * math.ceil(training_size/batch_size) * epochs / duration
     # Store the event tuples
-    events.append((secs_start,START,rate))
-    events.append((secs_stop,STOP,rate))
+    events.append((secs_start, START, rate))
+    events.append((secs_stop,  STOP,  rate))
 
 print("Found %i events." % len(events))
 
