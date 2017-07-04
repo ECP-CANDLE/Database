@@ -1,6 +1,8 @@
 
 # JSON TO LOAD
 
+# NOTE: Run this with ./json2load (shell script wrapper)
+
 # Converts a directory of runs into a simple load over time table
 # The output file format for each line is
 # timestamp load
@@ -17,9 +19,8 @@ import json
 import os
 import sys
 
-def abort(msg):
-    print msg
-    exit(1)
+# Set PYTHONPATH=$PWD
+import plottools
 
 # Process input arguments
 if len(sys.argv) != 3:

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+# JSON TO LOAD SH
+
+# Shell wrapper for json2load.py
+
+THIS=$( dirname $0 )
+export PYTHONPATH=$THIS:${PYTHONPATH:-}
+
+python json2load.py $*
