@@ -8,8 +8,7 @@
 # timestamp rate
 # where the timestamp is floating point Unix hours
 #   relative to first event
-# and the rate is:
-#   trainable_params * ceiling(1120/batch_size) * epochs run / total time
+# and the rate is defined in the README
 
 # Tested with dataset on Theta:
 # root_dir=/projects/Candle_ECP/pbalapra/Experiments/nt3_mlrMBO-360-10
@@ -35,6 +34,8 @@ def get_param(parameters, param):
             s = parameter[chars:]
             return int(s)
 
+training_size = 1120.0
+
 for rundir in rundirs:
     J = get_json(rundir)
     record_count = len(J)
@@ -49,7 +50,7 @@ for rundir in rundirs:
     secs_start = date2secs(time_str_start)
     secs_stop  = date2secs(time_str_stop)
     duration = secs_stop - secs_start
-    rate = trainable_params * math.ceil(1120.0/batch_size) * epochs / duration
+    rate = trainable_params * math.ceil(training_size/batch_size) * epochs / duration
     # Store the event tuples
     events.append((secs_start,START,rate))
     events.append((secs_stop,STOP,rate))
