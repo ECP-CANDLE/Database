@@ -16,5 +16,6 @@ $ ./plot.sh rate
 The learning rate is:
 ----
 training_size = 1120
-trainable_params * ceiling(training_size/batch_size) * epochs run / total time
+trainable_params * ceiling(training_size/batch_size) * epochs / total time
 ----
+meaning something like "weight updates per second."
