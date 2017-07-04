@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+# JSON TO TABLE
+
+# Shell wrapper for json2load.py, json2rate.py
+
+if [ ${#*} = 0 ]
+then
+  echo "Usage: <mode> <root_dir> <output_file>"
+  exit 1
+fi
+MODE=$1
+shift
+
+THIS=$( dirname $0 )
+export PYTHONPATH=$THIS:${PYTHONPATH:-}
+
+python json2$MODE.py $*
