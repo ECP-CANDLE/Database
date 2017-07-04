@@ -1,7 +1,7 @@
 
 # JSON TO LOAD
 
-# NOTE: Run this with ./json2load (shell script wrapper)
+# NOTE: Run this with './json2table load' (shell script wrapper)
 
 # Converts a directory of runs into a simple load over time table
 # The output file format for each line is
@@ -13,60 +13,19 @@
 # Tested with
 # root_dir=/projects/Candle_ECP/pbalapra/Experiments/nt3_mlrMBO-360-10
 
-from datetime import datetime
-import glob
-import json
-import os
-import sys
-
 # Set PYTHONPATH=$PWD
-import plottools
+from plottools import *
 
-# Process input arguments
-if len(sys.argv) != 3:
-    abort("usage: <root directory> <output file>")
-root_dir   = sys.argv[1]
-output_file = sys.argv[2]
+(root_dir, output_file) = get_args()
 
 # List of all run directories to be processed
-rundirs = []
-# Fill in rundirs, omitting miscellaneous files
-entries = glob.glob(root_dir+"/*")
-for entry in entries:
-    if os.path.isdir(entry):
-        rundirs.append(entry)
+rundirs = get_rundirs(root_dir)
 
-# The time format used in the JSON        
-time_fmt = "%Y-%m-%d %H:%M:%S"
-# The Unix epoch
-epoch = datetime.utcfromtimestamp(0)
-
-def date2secs(date_string):
-    """Convert date string from JSON to floating-point seconds"""
-    tokens = date_string.split(".")
-    prefix = tokens[0]
-    suffix = tokens[1]
-    d = datetime.strptime(prefix, time_fmt)
-    secs = (d - epoch).total_seconds()
-    microsecs = int(suffix)
-    return secs+microsecs/1000000.0
-
-START = 1
-STOP  = 2
 # List of events, each a tuple: (timestamp, START|STOP)
 events = []
 
 for rundir in rundirs:
-    # Find the JSON file
-    output = rundir+"/output"
-    json_files = glob.glob(output+"/*.json")
-    count = len(json_files)
-    if count != 1:
-        abort("rundir: %s has %i JSON files!" % (rundir,count))
-    json_file = json_files[0]
-    # Open and parse the JSON file for start/stop events
-    with open(json_file, "r") as fp:
-        J = json.load(fp)
+    J = get_json(rundir)
     record_count = len(J)
     record_start = J[0]
     record_stop  = J[record_count-1]
@@ -75,8 +34,8 @@ for rundir in rundirs:
     secs_start = date2secs(time_str_start)
     secs_stop  = date2secs(time_str_stop)
     # Store the event tuples
-    events.append((secs_start,START))
-    events.append((secs_stop,STOP))
+    events.append((secs_start, START))
+    events.append((secs_stop,  STOP ))
 
 print("Found %i events." % len(events))
 
