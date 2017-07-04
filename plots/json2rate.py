@@ -23,7 +23,7 @@ from plottools import *
 # List of all run directories to be processed
 rundirs = get_rundirs(root_dir)
 
-# List of events, each a tuple: (timestamp, START|STOP)
+# List of events, each a tuple: (timestamp, START|STOP, rate)
 events = []
 
 def get_param(parameters, param):
