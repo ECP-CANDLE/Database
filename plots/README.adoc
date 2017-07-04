@@ -1,7 +1,20 @@
 
 To make the load plot, do:
 
+Load plot:
 ----
-$ python json2load.py /path/to/nt3_mlrMBO-360-10 load.data
-$ ./load.sh
+$ json2table load /path/to/nt3_mlrMBO-360-10 load.data
+$ ./plot.sh load
+----
+
+Rate plot:
+----
+$ json2table rate /path/to/nt3_mlrMBO-360-10 rate.data
+$ ./plot.sh rate
+----
+
+The learning rate is:
+----
+training_size = 1120
+trainable_params * ceiling(training_size/batch_size) * epochs run / total time
 ----
