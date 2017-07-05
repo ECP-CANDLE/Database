@@ -6,6 +6,7 @@
 from datetime import datetime
 import glob
 import json
+import logging
 import os
 import sys
 
@@ -17,8 +18,11 @@ epoch = datetime.utcfromtimestamp(0)
 START = 1
 STOP  = 2
 
+logging.basicConfig(level=logging.INFO,
+                    format='%(levelname)-9s%(message)s',)
+
 def abort(msg):
-    print msg
+    logging.critical(msg)
     exit(1)
 
 def get_args():
@@ -46,17 +50,27 @@ def date2secs(date_string):
     d = datetime.strptime(prefix, time_fmt)
     secs = (d - epoch).total_seconds()
     microsecs = int(suffix)
-    return secs+microsecs/1000000.0
+    return secs + microsecs/1000000.0
 
-def get_json(rundir):
-    """ Find the JSON file for the given rundir """
-    output = rundir+"/output"
+def get_jsons(rundir):
+    """ Find the JSON files for the given rundir """
+
+    # USER: Select a subdir:
+    # subdir = "output"
+    subdir = "save"
+    output = rundir+"/"+subdir
     json_files = glob.glob(output+"/*.json")
-    count = len(json_files)
-    if count != 1:
-        abort("rundir: %s has %i JSON files!" % (rundir,count))
-    json_file = json_files[0]
-    # Open and parse the JSON file for start/stop events
-    with open(json_file, "r") as fp:
-        J = json.load(fp)
-    return J
+
+    results = []
+    for json_file in json_files:
+        size = os.path.getsize(json_file)
+        if size == 0:
+            logging.warning("file size is 0: %s", json_file)
+            continue
+        with open(json_file, "r") as fp:
+            try:
+                J = json.load(fp)
+            except ValueError as e:
+                abort("Error loading: %s\n%s" % (json_file,str(e)))
+        results.append(J)
+    return results

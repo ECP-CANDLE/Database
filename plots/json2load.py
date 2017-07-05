@@ -13,6 +13,8 @@
 # Tested with
 # root_dir=/projects/Candle_ECP/pbalapra/Experiments/nt3_mlrMBO-360-10
 
+import logging
+
 # Set PYTHONPATH=$PWD
 from plottools import *
 
@@ -25,19 +27,20 @@ rundirs = get_rundirs(root_dir)
 events = []
 
 for rundir in rundirs:
-    J = get_json(rundir)
-    record_count = len(J)
-    record_start = J[0]
-    record_stop  = J[record_count-1]
-    time_str_start = record_start["start_time"]
-    time_str_stop  = record_stop ["end_time"]["set"]
-    secs_start = date2secs(time_str_start)
-    secs_stop  = date2secs(time_str_stop)
-    # Store the event tuples
-    events.append((secs_start, START))
-    events.append((secs_stop,  STOP ))
+    Js = get_jsons(rundir)
+    for J in Js:
+        record_count = len(J)
+        record_start = J[0]
+        record_stop  = J[record_count-1]
+        time_str_start = record_start["start_time"]
+        time_str_stop  = record_stop ["end_time"]["set"]
+        secs_start = date2secs(time_str_start)
+        secs_stop  = date2secs(time_str_stop)
+        # Store the event tuples
+        events.append((secs_start, START))
+        events.append((secs_stop,  STOP ))
 
-print("Found %i events." % len(events))
+logging.info("Found %i events." % len(events))
 
 # Sort by timestamp
 events.sort()

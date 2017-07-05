@@ -13,6 +13,7 @@
 # Tested with dataset on Theta:
 # root_dir=/projects/Candle_ECP/pbalapra/Experiments/nt3_mlrMBO-360-10
 
+import logging
 import math
 
 # Set PYTHONPATH=$PWD
@@ -37,25 +38,26 @@ def get_param(parameters, param):
 training_size = 1120.0
 
 for rundir in rundirs:
-    J = get_json(rundir)
-    record_count = len(J)
-    record_start = J[0]
-    record_stop  = J[record_count-1]
-    epochs = record_count-2
-    parameters = J[0]["parameters"]
-    batch_size       = get_param(parameters, "batch_size")
-    trainable_params = get_param(parameters, "trainable_params")
-    time_str_start = record_start["start_time"]
-    time_str_stop  = record_stop ["end_time"]["set"]
-    secs_start = date2secs(time_str_start)
-    secs_stop  = date2secs(time_str_stop)
-    duration = secs_stop - secs_start
-    rate = trainable_params * math.ceil(training_size/batch_size) * epochs / duration
-    # Store the event tuples
-    events.append((secs_start, START, rate))
-    events.append((secs_stop,  STOP,  rate))
+    Js = get_jsons(rundir)
+    for J in Js:
+        record_count = len(J)
+        record_start = J[0]
+        record_stop  = J[record_count-1]
+        epochs = record_count-2
+        parameters = J[0]["parameters"]
+        batch_size       = get_param(parameters, "batch_size")
+        trainable_params = get_param(parameters, "trainable_params")
+        time_str_start = record_start["start_time"]
+        time_str_stop  = record_stop ["end_time"]["set"]
+        secs_start = date2secs(time_str_start)
+        secs_stop  = date2secs(time_str_stop)
+        duration = secs_stop - secs_start
+        rate = trainable_params * math.ceil(training_size/batch_size) * epochs / duration
+        # Store the event tuples
+        events.append((secs_start, START, rate))
+        events.append((secs_stop,  STOP,  rate))
 
-print("Found %i events." % len(events))
+logging.info("Found %i events." % len(events))
 
 # Sort by timestamp
 events.sort()
