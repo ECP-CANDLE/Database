@@ -23,6 +23,8 @@ from plottools import *
 # List of all run directories to be processed
 rundirs = get_rundirs(root_dir)
 
+logging.info("Found %i directories." % len(rundirs))
+
 # List of events, each a tuple: (timestamp, START|STOP)
 events = []
 
@@ -41,6 +43,9 @@ for rundir in rundirs:
         events.append((secs_stop,  STOP ))
 
 logging.info("Found %i events." % len(events))
+
+if len(events) == 0:
+    abort("No events!")
 
 # Sort by timestamp
 events.sort()
@@ -65,3 +70,4 @@ for event in events:
     fp_out.write("%0.6f %i\n" % (t, load))
 
 fp_out.close()
+logging.info("Wrote %s ." % output_file)
