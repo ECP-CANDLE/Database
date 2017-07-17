@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+# MONOTONE
+
+# Shell wrapper for monotone.py
+
+usage()
+{
+  echo "Usage: <input_file> <output_file>"
+}
+
+if [ ${#*} = 0 ]
+then
+  usage
+  exit 1
+fi
+
+THIS=$( dirname $0 )
+export PYTHONPATH=$THIS:${PYTHONPATH:-}
+
+python $THIS/monotone.py $*
