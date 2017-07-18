@@ -75,11 +75,12 @@ The tool is called +candle_db+.  It contains a nice Python API for accessing the
 
 == Workflow access from Python
 
-Cf. The SwiftExamples https://github.com/CODARcode/SwiftExamples/blob/5f5ff606afa5a56686def061deea2d75a51dede2/SimpleSweepPyDB/sweep.py=L57[sweep.py], which is called from Swift
+Cf. The SwiftExamples
+https://github.com/CODARcode/SwiftExamples/blob/4809119740c64c0d55bb2d78efbbe5ab13c99716/SimpleSweepPyDB/sweep.py#L57[sweep.py], which is called from Swift
 
 ----
 import candle_db
-candle_db.run_insert(run_id=run_id,
+candle_db.update_run(run_id=run_id,
                      parameters=params_string,
                      experiment_id=sweep_experiment_id)
 ----
