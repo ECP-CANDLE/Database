@@ -130,7 +130,6 @@ def print_result(result):
 
 def print_table(D):
     K = D.keys()
-    K.sort()
     n = max(map(len, K)) # Length of longest key
     for (k,v) in D.iteritems():
         print("%*s = %s" % (-n, k, v))
