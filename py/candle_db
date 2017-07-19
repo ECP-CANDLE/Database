@@ -40,7 +40,9 @@ def update_run(run_id, parameters,
                model_description_file = None,
                model_weight_file = None,
                model_result_files = None):
-    update_run_kv([
+    update_run_kv(
+        # TODO: Handle defaults
+        [
         {
             "run_id": run_id,
             "parameters": parameters,
@@ -48,7 +50,7 @@ def update_run(run_id, parameters,
             "experiment_id": experiment_id
         }])
 
-def experiment_insert(experiment_id,
+def update_experiment(experiment_id,
                       benchmark_id  = "unknown",
                       dataset_id    = "unknown",
                       experiment_title = "untitled",
