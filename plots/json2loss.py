@@ -8,7 +8,7 @@
 # timestamp load
 # where the timestamp is floating point Unix hours
 #   relative to first event
-# and the load is the number of models running
+# and the loss is the validation loss reported in the JSON
 
 # Tested with
 # Cori: /global/homes/p/pbalapra/candle/nt3_mlrMBO-rs-360-01

@@ -5,15 +5,18 @@ Install JWPLOT: https://github.com/jmjwozniak/jwplot
 
 == Plots
 
-To make the load plot, do:
+All plots make an EPS and a PDF by default.
+This can be changed in plot.sh .
 
-Load plot:
+To make the plots, do:
+
+=== Load plot
 ----
 $ json2table load /path/to/nt3_mlrMBO-360-10 load.data
 $ ./plot.sh load
 ----
 
-Rate plot:
+=== Rate plot
 ----
 $ json2table rate /path/to/nt3_mlrMBO-360-10 rate.data
 $ ./plot.sh rate
@@ -25,3 +28,22 @@ training_size = 1120
 trainable_params * ceiling(training_size/batch_size) * epochs / total time
 ----
 meaning something like "weight updates per second."
+
+=== Loss plot
+
+This is the ML validation loss over time.
+NaNs are automatically excised from the data.
+
+----
+$ json2table loss /path/to/nt3_mlrMBO-360-10 loss-raw.data
+$ ./monotone loss-raw.data loss.data
+$ ./plot.sh loss
+----
+
+The +monotone+ script ensures that the values in +loss.data+ are decreasing
+over time.
+
+== Logging
+
+We use conventional Python logging.
+The log level and configuration are in plottools.py

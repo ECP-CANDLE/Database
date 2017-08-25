@@ -15,6 +15,7 @@ time_fmt = "%Y-%m-%d %H:%M:%S"
 # The Unix epoch
 epoch = datetime.utcfromtimestamp(0)
 
+# Differentiate between start and stop events
 START = 1
 STOP  = 2
 
