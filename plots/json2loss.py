@@ -14,6 +14,7 @@
 # Cori: /global/homes/p/pbalapra/candle/nt3_mlrMBO-rs-360-01
 
 import logging
+from math import isnan
 
 # Set PYTHONPATH=$PWD
 from plottools import *
@@ -58,6 +59,9 @@ fp_out = open(output_file, "w")
 load = 0
 for event in events:
     t = (event[0] - first)/3600
+    if isnan(event[1]):
+        logging.debug("found NaN at timestamp: %0.6f" % t)
+        continue
     fp_out.write("%0.6f %f\n" % (t, event[1]))
 
 fp_out.close()
