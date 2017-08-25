@@ -1,4 +1,10 @@
 
+== Prerequisites
+
+Install JWPLOT: https://github.com/jmjwozniak/jwplot
+
+== Plots
+
 To make the load plot, do:
 
 Load plot:
