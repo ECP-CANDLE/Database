@@ -75,3 +75,18 @@ def get_jsons(rundir):
                 abort("Error loading: %s\n%s" % (json_file,str(e)))
         results.append(J)
     return results
+
+def file2tokens(filename):
+    result = []
+    with open(filename, "r") as fp:
+        for line in fp:
+            # Strip comments
+            splits = line.split("#")
+            line = splits[0]
+            # Ignore whitespace
+            line = line.strip()
+            # Omit blank lines
+            if len(line) == 0:
+                continue
+            result.append(line)
+    return result
