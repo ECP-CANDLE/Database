@@ -1,0 +1,11 @@
+
+# From p3b1_mlrMBO/data/parameter_set3.R
+
+learning_rate
+dropout
+activation
+optimizer
+shared_nnet_spec
+ind_nnet_spec
+batch_size
+epochs
