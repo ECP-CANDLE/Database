@@ -52,14 +52,14 @@ with open(output_file, "w") as fp_out:
             tokens = entry.split(":")
             param = tokens[0]
             if param in selected:
-                value = tokens[1].strip()
+                # re-join tail e.g. ['data_url', 'ftp', '//ftp.mcs...']
+                value = ":".join(tokens[1:]).strip()
                 D[param] = value
 
         # Get minimum val_loss in the directory
         val_losses = []
         for J in Js:
-            record_count  = len(J)
-            record_penult = J[record_count-2]
+            record_penult = J[-2]
             val_losses.append(record_penult["validation_loss"]["set"])
         val_loss = min(val_losses)
         D["val_loss"] = val_loss
