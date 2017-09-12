@@ -10,8 +10,7 @@
 #   relative to first event
 # and the loss is the validation loss reported in the JSON
 
-# Tested with
-# Cori: /global/homes/p/pbalapra/candle/nt3_mlrMBO-rs-360-01
+# Tested with P1B1, NT3, and possibly others
 
 import logging
 from math import isnan
