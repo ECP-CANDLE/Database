@@ -25,7 +25,8 @@ rundirs = get_rundirs(root_dir)
 
 logging.info("Found %i directories." % len(rundirs))
 
-# List of events, each a tuple: (timestamp, val_loss)
+# Initially unordered list of events,
+#   each a tuple: (timestamp, val_loss, debug_data)
 events = []
 
 for rundir in rundirs:
