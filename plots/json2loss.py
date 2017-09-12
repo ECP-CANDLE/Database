@@ -39,7 +39,7 @@ for rundir in rundirs:
         time_str_stop = record_stop  ["end_time"]["set"]
         secs_stop     = date2secs(time_str_stop)
         # Store the event tuple
-        events.append((secs_stop,  val_loss))
+        events.append((secs_stop,  val_loss, time_str_stop))
 
 logging.info("Found %i events." % len(events))
 
@@ -62,6 +62,7 @@ for event in events:
     if isnan(event[1]):
         logging.debug("found NaN at timestamp: %0.6f" % t)
         continue
+    # fp_out.write("# %s\n" % event[2]) # Debugging
     fp_out.write("%0.6f %f\n" % (t, event[1]))
 
 fp_out.close()
