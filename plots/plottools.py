@@ -56,10 +56,7 @@ def date2secs(date_string):
 def get_jsons(rundir):
     """ Find the JSON files for the given rundir """
 
-    # USER: Select a subdir:
-    # subdir = "output"
-    subdir = "save"
-    output = rundir+"/"+subdir
+    output = find_output(rundir)
     json_files = glob.glob(output+"/*.json")
 
     results = []
@@ -75,6 +72,28 @@ def get_jsons(rundir):
                 abort("Error loading: %s\n%s" % (json_file,str(e)))
         results.append(J)
     return results
+
+# subdir may be "output" or "save", depending on which script wrote it
+# We use this global to remember which one worked last time
+subdir = "output"
+
+def find_output(rundir):
+    """ Helper for get_jsons(): look for directories output|save """
+    global subdir
+    output = rundir+"/"+subdir
+    if not os.path.isdir(output):
+        if subdir == "save":
+            subdir = "output"
+        elif subdir == "output":
+            subdir = "save"
+        else:
+            abort("invalid subdir="+subdir)
+        output = rundir+"/"+subdir
+        if not os.path.isdir(output):
+            abort("could not find either:\n" +
+                  "\t " + rundir+"/output" + " or\n" +
+                  "\t " + rundir+"/save")
+    return output
 
 def file2tokens(filename):
     result = []
