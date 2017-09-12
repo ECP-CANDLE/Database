@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(levelname)-9s%(message)s',)
 
 def abort(msg):
-    logging.critical(msg)
+    logging.critical("abort: " + msg)
     exit(1)
 
 def get_args():
