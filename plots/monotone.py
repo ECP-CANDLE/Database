@@ -26,7 +26,7 @@ with open(input_file, "r")  as fp_i, \
         val_loss = float(val_loss_string)
         if val_loss < val_loss_min:
             val_loss_min = val_loss
-            fp_o.write("%s, %f\n" % (t, val_loss_min))
+            fp_o.write("%s %f\n" % (t, val_loss_min))
     # Ensure the last data point is written for the plot:
     if val_loss >= val_loss_min:
-        fp_o.write("%s, %f\n" % (t, val_loss_min))
+        fp_o.write("%s %f\n" % (t, val_loss_min))
