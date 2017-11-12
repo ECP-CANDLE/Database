@@ -39,6 +39,8 @@ def get_rundirs(root_dir):
     rundirs = []
     entries = glob.glob(root_dir+"/*")
     for entry in entries:
+        if entry.endswith(".bak"):
+            continue
         if os.path.isdir(entry):
             rundirs.append(entry)
     return rundirs
