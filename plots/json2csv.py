@@ -68,6 +68,7 @@ for rundir in rundirs:
     val_losses = []
     for J in Js:
         record_count  = len(J)
+        # TODO: check for "status" "set" "Finished"
         record_penult = J[record_count-2]
         val_losses.append(record_penult["validation_loss"]["set"])
     val_loss = min(val_losses)
