@@ -47,8 +47,17 @@ logging.info("Found %i events." % len(events))
 if len(events) == 0:
     abort("No events!")
 
+import json
+
+with open('result1.json', 'w') as fp:
+    json.dump(events, fp)
+
 # Sort by timestamp
 events.sort()
+
+with open('result2.json', 'w') as fp:
+    json.dump(events, fp)
+
 
 # Get first event time
 first = events[0][0]

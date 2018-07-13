@@ -16,6 +16,12 @@ $ json2table load /path/to/nt3_mlrMBO-360-10 load.data
 $ ./plot.sh load
 ----
 
+To make the plots, with full worker usage (including data loading), do:
+----
+$ python startstop.py <Experiment Directory>/run load.data
+$ ./plot.sh load
+----
+
 === Rate plot
 ----
 $ json2table rate /path/to/nt3_mlrMBO-360-10 rate.data

@@ -59,7 +59,8 @@ def get_jsons(rundir):
     """ Find the JSON files for the given rundir """
 
     output = find_output(rundir)
-    json_files = glob.glob(output+"/*.json")
+    # restrict to run.*.json files
+    json_files = glob.glob(output+"/run.*.json")
 
     results = []
     for json_file in json_files:
